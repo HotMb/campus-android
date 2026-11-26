@@ -12,16 +12,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import fr.esgi4.campus.ui.theme.CampusTheme
+import android.util.Log
+
+private const val TAG = "Campus"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val capacity = "douze".toIntOrNull() ?: 0
+        Log.d(TAG, "Places : $capacity")
+
         enableEdgeToEdge()
         setContent {
             CampusTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Otmane",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -42,6 +49,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     CampusTheme {
-        Greeting("Android")
+        Greeting("Otmane")
     }
 }
