@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import fr.esgi4.campus.ui.theme.CampusTheme
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
 
 private const val TAG = "Campus"
 
@@ -20,17 +22,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val capacity = "douze".toIntOrNull() ?: 0
-        Log.d(TAG, "Places : $capacity")
-
         enableEdgeToEdge()
         setContent {
             CampusTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Otmane",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Column(modifier = Modifier.padding(innerPadding)) {
+                        EventHeader(
+                            title = "Tournoi de football",
+                            category = "Sport",
+                            location = null
+                        )
+                    }
                 }
             }
         }
@@ -50,5 +52,30 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     CampusTheme {
         Greeting("Otmane")
+    }
+}
+
+@Composable
+fun EventHeader(
+    title: String,
+    category: String,
+    location: String?
+) {
+    Column {
+        Text(text = title)
+        Text(text = category)
+        Text(text = location ?: "Lieu à confirmer")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EventHeaderPreview() {
+    MaterialTheme {
+        EventHeader(
+            title = "Tournoi de football",
+            category = "Sport",
+            location = null
+        )
     }
 }
