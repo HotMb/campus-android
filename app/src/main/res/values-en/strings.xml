@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Campus</string>
+    <string name="action_book">Book</string>
+    <string name="action_view">View</string>
+    <string name="location_unknown">Location to be confirmed</string>
+
+    <plurals name="remaining_places">
+        <item quantity="one">%d place remaining</item>
+        <item quantity="other">%d places remaining</item>
+    </plurals>
+</resources>

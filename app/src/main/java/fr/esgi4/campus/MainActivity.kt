@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import fr.esgi4.campus.ui.theme.CampusTheme
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Button
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
@@ -40,6 +42,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewFontScale
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 
 private const val TAG = "Campus"
 
@@ -82,7 +92,7 @@ fun EventHeader(
     Column {
         Text(text = title)
         Text(text = category)
-        Text(text = location ?: "Lieu à confirmer")
+        Text(text = location ?: stringResource(R.string.location_unknown))
     }
 }
 
@@ -131,16 +141,20 @@ fun EventCard(
             }
 
             Text(
-                text = event.location ?: "Lieu à confirmer"
+                text = event.location ?: stringResource(R.string.location_unknown)
             )
 
             TextButton(
                 onClick = onClick,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text(text = "Voir")
+                Text(text = stringResource(R.string.action_view))
             }
-            Text(text = "Places restantes : ${event.capacity}")
+            Text(pluralStringResource(
+                R.plurals.remaining_places,
+                event.capacity,
+                event.capacity
+            ))
 
             val interactionSource = remember { MutableInteractionSource() }
 
@@ -155,7 +169,7 @@ fun EventCard(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 interactionSource = interactionSource
             ) {
-                Text(text = "Réserver")
+                Text(text = stringResource(R.string.action_book))
             }
         }
     }
@@ -244,7 +258,7 @@ fun EventListScreen(events: List<Event>) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Campus") }
+                title = { Text(text = stringResource(R.string.app_name)) }
             )
         }
     ) { innerPadding ->
@@ -275,21 +289,68 @@ fun EventListScreen(events: List<Event>) {
 }
 
 @Composable
-fun EventDetailScreen(event: Event, onBook: () -> unit){
+fun EventDetailScreen(event: Event, onBook: () -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ){
-        Text(text = event.title)
-        Text(text = event.location ?: "Lieu à confirmer")
+        Image(painter = painterResource(R.drawable.event_banner),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp),
+            colorFilter = ColorFilter.tint(
+                MaterialTheme.colorScheme.onSurface
+            )
+        )
+        Text(text = event.title, style = MaterialTheme.typography.headlineSmall)
+        Text(text = event.location ?: stringResource(R.string.location_unknown))
         Text(text = event.description)
+        Button(onClick = onBook, enabled = event.capacity > 0,
+            modifier = Modifier.fillMaxWidth()) {
+            Text(text = stringResource(R.string.action_book))
+        }
     }
 }
 
-@Preview(showBackground = true, widthDp = 360, heightDp = 640)
+@PreviewLightDark
+@PreviewFontScale
+@PreviewScreenSizes
+@Preview(
+    name = "Police 200 %",
+    fontScale = 2f,
+    widthDp = 360,
+    heightDp = 640
+)
 @Composable
 fun EventDetailScreenPreview() {
+    CampusTheme{
+        Surface(modifier = Modifier.fillMaxSize()) {
+            EventDetailScreen(
+                event = events.first(),
+                onBook = {}
+            )
+        }
 
+    }
+
+}
+
+@PreviewLightDark
+@PreviewFontScale
+@PreviewScreenSizes
+@Preview(
+    name = "English",
+    locale = "en",
+    widthDp = 360,
+    heightDp = 640
+)
+@Composable
+fun EventListScreenPreview() {
+    CampusTheme {
+        EventListScreen(events = events)
+    }
 }
